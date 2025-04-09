@@ -22,3 +22,5 @@ const useMessageStore = create<MessageState>((set) => ({
 export const useMessages = () => useMessageStore((state) => state.messages);
 export const useMessageActions = () => useMessageStore((state) => state.actions);
 
+export default useMessageStore;
+

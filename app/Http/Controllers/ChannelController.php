@@ -16,30 +16,19 @@ class ChannelController extends Controller
     /**
      * @param Server $server
      * @param Channel $channel
-     * @return RedirectResponse
+     * @return Response
      */
     public function home(Server $server, Channel $channel): Response
     {
         // 预加载关系并分页消息
         $channel->load(['server.members', 'messages' => function($query) {
-            // $query->latest()->with(['user', 'reactions.user'])->paginate(50);
-
-            // 先按最新排序获取消息ID
-            $latestMessageIds = $query
-                ->latest()
-                ->take(50)
-                ->pluck('id');
-
-            // 然后按正序获取完整消息数据
-            return $query
-                ->whereIn('id', $latestMessageIds)
-                ->oldest() // 正序排列
-                ->with(['user', 'reactions.user']);
+            $query->latest()->with(['user', 'reactions.user'])->paginate(50);
         }]);
 
         return Inertia::render('channel-home', [
             'server' => $server->load('channels'),
             'channel' => $channel,
+            'latest_messages' => $channel->getLatestMessages()->values(),
             'servers' => auth()->user()->servers()
                 ->withCount(['channels as unread_count' => function($query) {
                     $query->whereHas('messages', function($q) {
@@ -62,9 +51,6 @@ class ChannelController extends Controller
      */
     public function show(Server $server, Channel $channel)
     {
-        // 授权检查
-        //$this->authorize('view', [$channel, $server]);
-
         // 预加载关系并分页消息
         $channel->load(['server.members', 'messages' => function($query) {
             // $query->latest()->with(['user', 'reactions.user'])->paginate(50);
@@ -85,6 +71,7 @@ class ChannelController extends Controller
         return Inertia::render('chat', [
             'server' => $server->load('channels'),
             'channel' => $channel,
+            'messages' => $channel->getLatestMessages(),
             'servers' => auth()->user()->servers()
                 ->withCount(['channels as unread_count' => function($query) {
                     $query->whereHas('messages', function($q) {
@@ -185,27 +172,6 @@ class ChannelController extends Controller
                 'channel' => $firstChannel->id
             ])
             : redirect()->route('servers.show', $server->id);
-    }
-
-    /**
-     * 存储新消息
-     */
-    public function storeMessage(Request $request, Channel $channel)
-    {
-        $validated = $request->validate([
-            'content' => 'required|string|max:2000',
-            'parent_id' => 'nullable|exists:messages,id'
-        ]);
-
-        $message = $channel->messages()->create(array_merge(
-            $validated,
-            ['user_id' => auth()->id()]
-        ));
-
-        // 广播消息事件
-        broadcast(new MessageSent($message))->toOthers();
-
-        return back();
     }
 
     /**

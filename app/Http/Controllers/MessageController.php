@@ -30,6 +30,6 @@ class MessageController extends Controller
         MessageSent::dispatch($message->load('user'));
 
         // return response()->json(['message' => $message]);
-        return back();
+        return null;
     }
 }

@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use App\Constants\ServerConstant;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  *
@@ -18,9 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $position
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Message> $messages
+ * @property-read CollectionAlias<int, \App\Models\Message> $messages
  * @property-read int|null $messages_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Message> $pinnedMessages
+ * @property-read CollectionAlias<int, \App\Models\Message> $pinnedMessages
  * @property-read int|null $pinned_messages_count
  * @property-read \App\Models\Server $server
  * @method static \Database\Factories\ChannelFactory factory($count = null, $state = [])
@@ -63,18 +66,32 @@ class Channel extends Model
         return Channel::firstWhere('server_id', ServerConstant::DEFAULT_SERVER);
     }
 
-    public function server()
+    public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
     }
 
-    public function messages()
+    public function messages(): HasMany
     {
-        return $this->hasMany(Message::class)->orderBy('created_at');
+        return $this->hasMany(Message::class)->orderBy('created_at', 'DESC');
     }
 
-    public function pinnedMessages()
+    public function pinnedMessages(): HasMany
     {
         return $this->hasMany(Message::class)->where('is_pinned', true);
+    }
+
+    /**
+     * @param int $limit
+     * @return Collection
+     */
+    public function getLatestMessages(int $limit = 50): Collection
+    {
+        return $this->messages()
+            ->with(['user', 'reactions.user'])
+            ->latest()
+            ->limit($limit)
+            ->get()
+            ->reverse();
     }
 }

@@ -20,8 +20,7 @@ export default function Demo() {
                         className="w-12 h-12 rounded-full bg-gray-700 hover:bg-green-500 transition-colors cursor-pointer flex items-center justify-center text-green-500 hover:text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                              stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            <path d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
                     </div>
                 </div>
@@ -34,9 +33,7 @@ export default function Demo() {
                         <h2 className="font-semibold truncate">Server Name</h2>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
                              fill="currentColor">
-                            <path fill-rule="evenodd"
-                                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                  clip-rule="evenodd"/>
+                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
                         </svg>
                     </div>
 
@@ -70,8 +67,7 @@ export default function Demo() {
                                 {/* Mic, headphone, settings icons would go here */}
                                 <svg className="w-5 h-5 hover:text-gray-200" fill="none" stroke="currentColor"
                                      viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                                    <path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                                 </svg>
                             </div>
                         </div>
@@ -85,9 +81,7 @@ export default function Demo() {
                         <div className="flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 mr-1"
                                  viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                      clip-rule="evenodd"/>
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"/>
                             </svg>
                             <span className="font-semibold">channel-name</span>
                         </div>
@@ -106,8 +100,7 @@ export default function Demo() {
                                 <button className="text-gray-400 hover:text-gray-200 p-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
                                          viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                        <path d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                                     </svg>
                                 </button>
                                 <input

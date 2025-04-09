@@ -13,17 +13,17 @@ import MessageListener from "@/components/chat/message-listener";
 type ChannelIndexProps = {
     server: Server;
     channel: Channel;
+    messages: Message[];
     servers: ServerList;
 };
 
-export default function ChannelHome({server, channel, servers }: ChannelIndexProps) {
+export default function ChannelHome({server, channel, latest_messages, servers }: ChannelIndexProps) {
     const { setMessages, setCurrentChannel } = useMessageActions();
 
     useEffect(() => {
-        console.log('set messages');
-        setMessages(channel.messages);
+        setMessages(latest_messages);
         setCurrentChannel(channel.id);
-    }, [channel.messages, channel.id, setMessages, setCurrentChannel]);
+    }, [channel.id]);
 
     return (
         <ChatLayout>
@@ -41,9 +41,7 @@ export default function ChannelHome({server, channel, servers }: ChannelIndexPro
                         <h2 className="font-semibold truncate">{server.name}</h2>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
                              fill="currentColor">
-                            <path fill-rule="evenodd"
-                                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                  clip-rule="evenodd"/>
+                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
                         </svg>
                     </div>
 
@@ -64,9 +62,7 @@ export default function ChannelHome({server, channel, servers }: ChannelIndexPro
                         <div className="flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 mr-1"
                                  viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                      clip-rule="evenodd"/>
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"/>
                             </svg>
                             <span className="font-semibold">channel-name</span>
                         </div>

@@ -37,8 +37,7 @@ export default function ServerList({ servers, currentServerId }: {
                 className="w-12 h-12 rounded-full bg-gray-700 hover:bg-green-500 transition-colors cursor-pointer flex items-center justify-center text-green-500 hover:text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    <path d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
             </div>
         </div>

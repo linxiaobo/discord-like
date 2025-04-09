@@ -75,8 +75,8 @@ const MessageList = () => {
             </div>
 
             {/* 用户消息示例 1 */}
-            {messages.map((message) => (
-                <div className="flex items-start group">
+            {messages.map((message, index) => (
+                <div className="flex items-start group" key={index}>
                     <div className="mr-4 flex-shrink-0">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-medium ${userStatusBgClass(message)}`}>
                             {message.user.name.split(' ').map(n => n[0]).join('')}

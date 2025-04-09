@@ -8,8 +8,8 @@ export default function ChannelList({ server }: { server: Server }) {
             <div className="text-xs font-semibold text-gray-400 px-2 py-1 uppercase tracking-wider">
                 TEXT CHANNELS
             </div>
-            {channels.map((channel) => (
-                <div className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 cursor-pointer">
+            {channels.map((channel, index) => (
+                <div key={index} className="px-2 py-1 rounded hover:bg-gray-700 text-gray-300 cursor-pointer">
                     # {channel.name}
                 </div>
             ))}
