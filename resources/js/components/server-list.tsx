@@ -33,11 +33,11 @@ export default function ServerList({ servers, currentServerId }: {
                                     {server.name.split(' ').map((word) => word[0]).join('')}
                                 </AvatarFallback>
                             </Avatar>
-
+                            {server.unread_count}
                             {server.unread_count && (
                                 <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-red-500 text-xs text-white flex items-center justify-center">
-                  {server.unread_count}
-                </span>
+                                  {server.unread_count}
+                                </span>
                             )}
                         </Link>
                     </TooltipTrigger>

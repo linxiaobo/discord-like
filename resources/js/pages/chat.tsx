@@ -68,7 +68,7 @@ export default function Chat({ server, channel, servers }: Props) {
                         <MessageView messages={channel.messages} />
                     </div>
 
-                    <MessageListener channelId={channel.id} />
+                    {/*<MessageListener channelId={channel.id} />*/}
                     <MessageInput channelId={channel.id} />
                 </div>
 

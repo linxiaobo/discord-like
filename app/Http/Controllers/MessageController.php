@@ -6,6 +6,7 @@ use App\Models\Channel;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Events\MessageSent;
+use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
@@ -25,8 +26,10 @@ class MessageController extends Controller
             'user_id' => auth()->id()
         ]);
 
-        broadcast(new MessageSent($message->load('user')))->toOthers();
+        //broadcast(new MessageSent($message->load('user')))->toOthers();
+        MessageSent::dispatch($message->load('user'));
 
+        // return response()->json(['message' => $message]);
         return back();
     }
 }

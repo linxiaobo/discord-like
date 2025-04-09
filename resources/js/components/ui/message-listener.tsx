@@ -7,15 +7,15 @@ export default function MessageListener() {
     useEffect(() => {
         if (!props.channel?.id) return
 
-        const channel = window.Echo.private(`channel.${props.channel.id}`)
+        const channel = window.Echo.channel(`channel.${props.channel.id}`)
 
         channel.listen('MessageSent', (data: { message: any }) => {
             // 这里需要根据你的状态管理方案更新消息列表
             // 例如使用 Zustand 或直接通过 Inertia 的 usePage
-            setPage({
+            /*setPage({
                 ...props,
                 messages: [...props.messages, data.message]
-            });
+            });*/
 
             console.log('New message received:', data.message)
         })

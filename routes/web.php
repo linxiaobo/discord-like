@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;
@@ -9,7 +10,29 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+Route::get('/demo', function () {
+    return Inertia::render('servers-demo');
+})->name('demo');
+
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('dashboard', function () {
+        return Inertia::render('dashboard');
+    })->name('dashboard');
+
+    Route::get('discussion', function () {
+        return Inertia::render('discussion');
+    })->name('discussion');
+
+    Route::get('/demo', function () {
+        return Inertia::render('servers-demo');
+    })->name('demo');
+
+    // redirect to channel for the auth users
+    Route::get('/app', AppController::class)->name('app');
+
+    Route::get('channels/{server}/{channel}', [ChannelController::class, 'home'])
+        ->name('channels.home');
+
     // 频道相关路由
     Route::prefix('servers/{server}')->group(function () {
         // 显示频道消息

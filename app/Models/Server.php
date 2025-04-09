@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Constants\ServerConstant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -50,6 +51,14 @@ class Server extends Model
         'description',
         'is_public',
     ];
+
+    /**
+     * @return $this
+     */
+    public function getDefaultServer(): self
+    {
+        return $this->find(ServerConstant::DEFAULT_SERVER);
+    }
 
     public function owner()
     {

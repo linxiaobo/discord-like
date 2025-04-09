@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Constants\ServerConstant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -53,6 +54,14 @@ class Channel extends Model
     protected $casts = [
         'is_private' => 'boolean',
     ];
+
+    /**
+     * @return Channel
+     */
+    public function getDefaultChannel(): self
+    {
+        return Channel::firstWhere('server_id', ServerConstant::DEFAULT_SERVER);
+    }
 
     public function server()
     {

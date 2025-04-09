@@ -127,6 +127,11 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'broadcasting' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/broadcasting.log'),
+        ],
+
     ],
 
 ];

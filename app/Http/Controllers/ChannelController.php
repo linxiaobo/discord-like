@@ -2,15 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use App\Models\Channel;
 use App\Models\Server;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Response;
 
 class ChannelController extends Controller
 {
+    /**
+     * @param Server $server
+     * @param Channel $channel
+     * @return RedirectResponse
+     */
+    public function home(Server $server, Channel $channel): Response
+    {
+        // 预加载关系并分页消息
+        $channel->load(['server.members', 'messages' => function($query) {
+            // $query->latest()->with(['user', 'reactions.user'])->paginate(50);
+
+            // 先按最新排序获取消息ID
+            $latestMessageIds = $query
+                ->latest()
+                ->take(50)
+                ->pluck('id');
+
+            // 然后按正序获取完整消息数据
+            return $query
+                ->whereIn('id', $latestMessageIds)
+                ->oldest() // 正序排列
+                ->with(['user', 'reactions.user']);
+        }]);
+
+        return Inertia::render('channel-home', [
+            'server' => $server->load('channels'),
+            'channel' => $channel,
+            'servers' => auth()->user()->servers()
+                ->withCount(['channels as unread_count' => function($query) {
+                    $query->whereHas('messages', function($q) {
+                        $q->where('created_at', '>', now()->subDay())
+                            /*->whereDoesntHave('reads', function($q) {
+                                $q->where('user_id', auth()->id());
+                            })*/;
+                    });
+                }])
+                ->get(),
+            'permissions' => [
+                'can_create_channel' => Gate::allows('create', [Channel::class, $server]),
+                'can_manage_channel' => Gate::allows('update', $channel),
+            ]
+        ]);
+    }
+
     /**
      * 显示频道消息页面
      */
@@ -21,7 +67,19 @@ class ChannelController extends Controller
 
         // 预加载关系并分页消息
         $channel->load(['server.members', 'messages' => function($query) {
-            $query->latest()->with(['user', 'reactions.user'])->paginate(50);
+            // $query->latest()->with(['user', 'reactions.user'])->paginate(50);
+
+            // 先按最新排序获取消息ID
+            $latestMessageIds = $query
+                ->latest()
+                ->take(50)
+                ->pluck('id');
+
+            // 然后按正序获取完整消息数据
+            return $query
+                ->whereIn('id', $latestMessageIds)
+                ->oldest() // 正序排列
+                ->with(['user', 'reactions.user']);
         }]);
 
         return Inertia::render('chat', [
