@@ -1,18 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm, usePage } from "@inertiajs/react";
 import { Textarea } from "@/components/ui/textarea";
-import { Channel } from "@/types";
+import { Channel, Message, User } from "@/types";
 import useMessageStore, { useMessageActions } from "@/components/chat/message-store";
 
 export default function MessageInput({ channel }: Channel) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { data, setData, post, processing, reset } = useForm({
-        content: ''
+        content: '',
+        client_id: '',
     });
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const { props } = usePage<{ channel: { id: string } }>();
-    const { addMessage } = useMessageActions();
+    const { addMessage, setMessages } = useMessageActions();
     const currentChannelId = () => useMessageStore((state) => state.currentChannelId);
+    const { auth } = usePage().props;
+    const currentUser = auth.user as User;
+    const [pendingMessages, setPendingMessages] = useState<Record<string, Message>>({});
 
     // 监听新消息并自动滚动到底部
     useEffect(() => {
@@ -23,10 +27,17 @@ export default function MessageInput({ channel }: Channel) {
         const channelName = `channel.${props.channel.id}`;
         const channelObject = window.Echo.channel(channelName);
 
-        channelObject.listen('MessageSent', ( data: { message: any } ) => {
+        channelObject.listen('MessageSent', ( message ) => {
             console.log('Subscribing to channel:', `channel.${props.channel.id}`);
-            // 这里可以更新本地消息列表
-            addMessage(data.message);
+
+            const isLocalMessage = message.client_id
+                ? Object.keys(pendingMessages).includes(message.client_id)
+                : false;
+
+            if (!isLocalMessage) {
+                addMessage(message);
+            }
+
             scrollToBottom();
         })
 
@@ -34,16 +45,42 @@ export default function MessageInput({ channel }: Channel) {
             channelObject.stopListening('MessageSent');
             window.Echo.leaveChannel(`channel.${props.channel.id}`)
         }
-    }, [currentChannelId, addMessage])
+    }, [currentChannelId, addMessage]);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    const handleChange = (e) => {
+        setData('content', e.target.value);
+        const clientId = `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        setData('client_id', clientId);
     }
 
     const handleSubmit =  (e) => {
         e.preventDefault();
 
         if (!data.content.trim()) return;
+
+        console.log(data);
+
+        const newMessage: Message = {
+            id: data.client_id,
+            content: data.content.trim(),
+            status: 'sending',
+            client_id: data.client_id,
+            is_pinned: false,
+            created_at: new Date().toISOString(),
+            user: {
+                id: currentUser.id,
+                name: currentUser.name,
+                avatar: currentUser.avatar,
+                status: currentUser.status
+            }
+        };
+        console.log(newMessage);
+        addMessage(newMessage);
+        setPendingMessages(prev => ({ ...prev, [data.client_id]: newMessage }));
 
         post(route('channels.messages.store', { channel }), {
             preserveScroll: true,
@@ -52,8 +89,11 @@ export default function MessageInput({ channel }: Channel) {
                 reset('content');
             },
             onError: () => {
-                // 简单错误处理
-                if (textareaRef.current) textareaRef.current.focus()
+                // set message to failed status
+                setMessages(prev => prev.map(m =>
+                    m.id === clientId ? {...m, status: 'failed'} : m
+                ));
+                if (textareaRef.current) textareaRef.current.focus();
             }
         });
     }
@@ -71,7 +111,7 @@ export default function MessageInput({ channel }: Channel) {
                     <Textarea
                         ref={textareaRef}
                         value={data.content}
-                        onChange={(e) => setData('content', e.target.value)}
+                        onChange={(e) => {handleChange(e)}}
                         className="min-h-[44px] max-h-[200px] bg-discord-dark-300 border-none resize-none pr-16"
                         placeholder={`Message #todo`}
                         rows={1}

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -21,9 +21,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $position
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read CollectionAlias<int, \App\Models\Message> $messages
+ * @property-read Collection<int, \App\Models\Message> $messages
  * @property-read int|null $messages_count
- * @property-read CollectionAlias<int, \App\Models\Message> $pinnedMessages
+ * @property-read Collection<int, \App\Models\Message> $pinnedMessages
  * @property-read int|null $pinned_messages_count
  * @property-read \App\Models\Server $server
  * @method static \Database\Factories\ChannelFactory factory($count = null, $state = [])

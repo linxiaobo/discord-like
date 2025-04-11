@@ -16,7 +16,10 @@ class MessageSent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
+    /**
+     * @var Message
+     */
+    public Message $message;
 
     public function __construct(Message $message)
     {
@@ -34,15 +37,15 @@ class MessageSent implements ShouldBroadcast
         Log::channel('broadcasting')->info($this->message);
         Log::channel('single')->info('---------------------------------------------------');
         return [
-            'message' => [
-                'id' => $this->message->id,
-                'content' => $this->message->content,
-                'created_at' => $this->message->created_at,
-                'user' => [
-                    'id' => $this->message->user->id,
-                    'name' => $this->message->user->name,
-                    'avatar' => $this->message->user->avatar
-                ]
+            'id' => $this->message->id,
+            'content' => $this->message->content,
+            'created_at' => $this->message->created_at,
+            'client_id' => $this->message->client_id,
+            'user' => [
+                'id' => $this->message->user->id,
+                'name' => $this->message->user->name,
+                'avatar' => $this->message->user->avatar,
+                'status' => 'online'
             ]
         ];
     }

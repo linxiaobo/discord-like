@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $client_id
  * @property-read \App\Models\Channel $channel
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MessageMention> $mentions
  * @property-read int|null $mentions_count
@@ -34,6 +35,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereChannelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereDeletedAt($value)
@@ -56,6 +58,7 @@ class Message extends Model
         'user_id',
         'channel_id',
         'parent_id',
+        'client_id',
         'is_pinned',
         'edited_at',
     ];

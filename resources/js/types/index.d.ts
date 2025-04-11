@@ -35,6 +35,7 @@ export interface User {
     name: string;
     email: string;
     avatar?: string;
+    status: string;
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
@@ -68,6 +69,7 @@ export interface Message {
     created_at: string
     edited_at?: string
     is_pinned: boolean
+    client_id: string
     user: User
     replies?: Message[]
 }
@@ -78,7 +80,7 @@ export interface MessageState {
     isLoading: boolean;
     error: string | null;
     actions: {
-        setMessages: (messages: Message[]) => void;
+        setMessages: (messages: (prev) => any) => void;
         addMessage: (message: Message) => void;
         prependMessages: (messages: Message[]) => void;
         clearMessages: () => void;
