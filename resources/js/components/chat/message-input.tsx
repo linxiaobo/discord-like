@@ -3,6 +3,7 @@ import { useForm, usePage } from "@inertiajs/react";
 import { Textarea } from "@/components/ui/textarea";
 import { Channel, Message, User } from "@/types";
 import useMessageStore, { useMessageActions } from "@/components/chat/message-store";
+import axios from 'axios';
 
 export default function MessageInput({ channel }: Channel) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -63,6 +64,41 @@ export default function MessageInput({ channel }: Channel) {
         );
     };
 
+    const sendMessage = async (data) => {
+        try {
+            await axios.post(
+                route('channels.messages.store', { channel }),
+                {
+                    headers: {
+                        //'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    'content': data.content,
+                    'client_id': data.client_id,
+                }
+            );
+
+            // 成功处理
+            console.log('Message sent');
+            reset('content');
+            setMessages(prev =>
+                updateMessage(prev, data.client_id, { status: 'sent' })
+            );
+
+        } catch (error) {
+            // 失败处理
+            console.error('Send failed:', error.response?.data || error.message);
+            setMessages(prev =>
+                updateMessage(prev, data.client_id, { status: 'failed' })
+            );
+
+            // 焦点回归
+            if (textareaRef.current) {
+                textareaRef.current.focus();
+            }
+        }
+    }
+
     const handleSubmit =  (e) => {
         e.preventDefault();
 
@@ -94,7 +130,7 @@ export default function MessageInput({ channel }: Channel) {
         addMessage(newMessage);
         setPendingMessages(prev => ({ ...prev, [data.client_id]: newMessage }));
 
-        post(route('channels.messages.store', { channel }), {
+        /*post(route('channels.messages.store', { channel }), {
             preserveScroll: true,
             onSuccess: (page) => {
                 console.log('message is sent successfully');
@@ -103,14 +139,17 @@ export default function MessageInput({ channel }: Channel) {
                     updateMessage(prev, data.client_id, { status: 'sent' })
                 );
             },
-            onError: () => {
+            onError: (errors) => {
+                console.log('on error');
                 // set message to failed status
                 setMessages(prev =>
                     updateMessage(prev, data.client_id, { status: 'failed' })
                 );
                 if (textareaRef.current) textareaRef.current.focus();
             }
-        });
+        });*/
+        sendMessage(data);
+
     }
 
     // 定期清理过期的pending消息
@@ -157,7 +196,7 @@ export default function MessageInput({ channel }: Channel) {
                         }}
                     />
                     <button type="submit" disabled={!data.content.trim()}>
-                        发送
+                        {processing ? 'Sending...' : 'Send'}
                     </button>
                 </form>
             </div>

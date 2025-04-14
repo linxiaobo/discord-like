@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { useMessages } from "@/components/chat/message-store";
+import { ExclamationCircleIcon, SignalIcon } from '@heroicons/react/24/outline';
 
 const MessageList = () => {
 
@@ -39,6 +40,21 @@ const MessageList = () => {
         }
 
         return className;
+    }
+
+    const getStatusIcon = (message) => {
+        switch (message.status) {
+            case 'sending':
+                return <SignalIcon className="text-blue-500" />;
+            case 'failed':
+                return <ExclamationCircleIcon className="text-red-500" />;
+            default:
+                return '';
+        }
+    };
+
+    const retrySend = () => {
+        alert('todo');
     }
 
     return (
@@ -86,6 +102,10 @@ const MessageList = () => {
                             <span className="ml-2 text-xs text-gray-400">{format(new Date(message.created_at), 'MMM d, yyyy h:mm a')}</span>
                         </div>
                         <p className="text-gray-100 mt-1">{message.content}</p>
+                        <div className="message-status flex items-center justify-center w-6 h-6 text-gray-400">{getStatusIcon(message)}</div>
+                        {message.status === 'failed' && (
+                            <button onClick={retrySend}>重试</button>
+                        )}
                     </div>
                 </div>
             ))}
