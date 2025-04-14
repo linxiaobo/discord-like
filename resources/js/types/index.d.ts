@@ -80,7 +80,7 @@ export interface MessageState {
     isLoading: boolean;
     error: string | null;
     actions: {
-        setMessages: (messages: (prev) => any) => void;
+        setMessages: (updater: (prev: Message[]) => Message[]) => void;
         addMessage: (message: Message) => void;
         prependMessages: (messages: Message[]) => void;
         clearMessages: () => void;

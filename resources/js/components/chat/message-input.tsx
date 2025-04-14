@@ -87,16 +87,42 @@ export default function MessageInput({ channel }: Channel) {
             onSuccess: (page) => {
                 console.log('message is sent successfully');
                 reset('content');
+                setMessages(prev =>
+                    prev.map(msg =>
+                        msg.id === data.client_id
+                            ? { ...newMessage, status: 'sent' }
+                            : msg
+                    )
+                );
             },
             onError: () => {
                 // set message to failed status
                 setMessages(prev => prev.map(m =>
-                    m.id === clientId ? {...m, status: 'failed'} : m
+                    m.id === data.client_id ? {...m, status: 'failed'} : m
                 ));
                 if (textareaRef.current) textareaRef.current.focus();
             }
         });
     }
+
+    // 定期清理过期的pending消息
+    /*useEffect(() => {
+        const interval = setInterval(() => {
+            const now = Date.now();
+            setPendingMessages(prev => {
+                const updated = { ...prev };
+                Object.keys(updated).forEach(id => {
+                    if (id.startsWith('client-') && now - parseInt(id.split('-')[1]) > 60000) {
+                        delete updated[id];
+                    }
+                });
+                return updated;
+            });
+        }, 30000);
+
+        return () => clearInterval(interval);
+    }, []);*/
+
 
     return (
         <div className="bg-gray-600 rounded-lg px-4 py-2">
