@@ -57,6 +57,12 @@ export default function MessageInput({ channel }: Channel) {
         setData('client_id', clientId);
     }
 
+    const updateMessage = (messages: Message[], id: string, update: Partial<Message>) => {
+        return messages.map(msg =>
+            msg.id === id ? { ...msg, ...update } : msg
+        );
+    };
+
     const handleSubmit =  (e) => {
         e.preventDefault();
 
@@ -66,6 +72,7 @@ export default function MessageInput({ channel }: Channel) {
 
         const newMessage: Message = {
             id: data.client_id,
+            channel_id: props.channel.id,
             content: data.content.trim(),
             status: 'sending',
             client_id: data.client_id,
@@ -74,10 +81,15 @@ export default function MessageInput({ channel }: Channel) {
             user: {
                 id: currentUser.id,
                 name: currentUser.name,
+                email: currentUser.email,
                 avatar: currentUser.avatar,
-                status: currentUser.status
+                status: currentUser.status,
+                email_verified_at: null,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
             }
         };
+
         console.log(newMessage);
         addMessage(newMessage);
         setPendingMessages(prev => ({ ...prev, [data.client_id]: newMessage }));
@@ -88,18 +100,14 @@ export default function MessageInput({ channel }: Channel) {
                 console.log('message is sent successfully');
                 reset('content');
                 setMessages(prev =>
-                    prev.map(msg =>
-                        msg.id === data.client_id
-                            ? { ...newMessage, status: 'sent' }
-                            : msg
-                    )
+                    updateMessage(prev, data.client_id, { status: 'sent' })
                 );
             },
             onError: () => {
                 // set message to failed status
-                setMessages(prev => prev.map(m =>
-                    m.id === data.client_id ? {...m, status: 'failed'} : m
-                ));
+                setMessages(prev =>
+                    updateMessage(prev, data.client_id, { status: 'failed' })
+                );
                 if (textareaRef.current) textareaRef.current.focus();
             }
         });

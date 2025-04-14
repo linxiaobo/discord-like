@@ -65,11 +65,13 @@ export interface Channel {
 
 export interface Message {
     id: string
+    channel_id: string
     content: string
     created_at: string
     edited_at?: string
     is_pinned: boolean
     client_id: string
+    status: string
     user: User
     replies?: Message[]
 }

@@ -21,7 +21,7 @@ export default function ChannelHome({server, channel, latest_messages, servers }
     const { setMessages, setCurrentChannel } = useMessageActions();
 
     useEffect(() => {
-        setMessages(latest_messages);
+        setMessages(prev => {return latest_messages});
         setCurrentChannel(channel.id);
     }, [channel.id]);
 
